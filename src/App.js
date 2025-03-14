@@ -5,7 +5,8 @@ function App() {
     const [word, setWord] = useState(""); // 연습 문구
     const [text, setText] = useState(""); // 사용자가 입력한 텍스트
     const [result, setResult] = useState(null); // 결과 데이터
-    const [userId, setUserId] = useState(`user-${Math.random()}`); // 사용자 ID
+    const [userId] = useState(`user-${Math.random()}`); // setUserId 제거 후 유지
+
 
     // 서버에서 연습 문구 가져오기
     const fetchWord = async () => {
@@ -16,11 +17,21 @@ function App() {
 
     // 타이핑 시작 기록 (서버에 시작 시간 저장)
     const startTyping = async () => {
-        await fetch(`${API_BASE_URL}/api/start`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: userId }),
-        });
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/start`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: "test-user" }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            console.log("Typing started successfully");
+        } catch (error) {
+            console.error("Error starting typing:", error);
+        }
     };
 
     // 타이핑 결과 전송
